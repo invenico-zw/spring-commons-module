@@ -8,7 +8,7 @@
         <version>2.3.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>zw.co.invenico</groupId>
+    <groupId>io.github.invenico.commons</groupId>
     <artifactId>spring-commons-module</artifactId>
     <version>1.0</version>
     <name>spring-commons-module</name>
@@ -43,6 +43,16 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.2.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20200518</version>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator-annotation-processor</artifactId>
@@ -85,9 +95,8 @@
                     <includes>
                         <include>**/*</include>
                     </includes>
-                    <repositoryName>spring-commons-module
-                    </repositoryName>      <!-- github repo name -->
-                    <repositoryOwner>schizhande</repositoryOwner>    <!-- github username  -->
+                    <repositoryName>spring-commons-module</repositoryName>      <!-- github repo name -->
+                    <repositoryOwner>invenico-zw</repositoryOwner>    <!-- github username  -->
                 </configuration>
                 <executions>
                     <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
@@ -109,5 +118,17 @@
             <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
     </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

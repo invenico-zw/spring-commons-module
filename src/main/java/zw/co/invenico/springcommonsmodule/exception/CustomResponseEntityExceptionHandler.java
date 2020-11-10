@@ -1,7 +1,10 @@
 package zw.co.invenico.springcommonsmodule.exception;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,10 +15,12 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import zw.co.invenico.springcommonsmodule.dto.RestResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -31,6 +36,17 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 //        ex.printStackTrace();
 //        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
 //    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FeignException.BadRequest.class)
+    public ResponseEntity<Object> handleFeignStatusException(FeignException e, HttpServletResponse response) {
+        log.error(e.getMessage());
+        response.setStatus(e.status());
+        Map<String, Object> error = new JSONObject(e.contentUTF8()).toMap();
+        String message = error.getOrDefault("message", HttpStatus.BAD_REQUEST).toString();
+        RestResponse errorDetails = new RestResponse(message, HttpStatus.BAD_REQUEST, "Failed");
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 
 
     @ExceptionHandler(InvalidRequestException.class)
