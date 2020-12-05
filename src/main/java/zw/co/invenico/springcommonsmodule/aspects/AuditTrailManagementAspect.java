@@ -45,8 +45,13 @@ public class AuditTrailManagementAspect {
                     ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
                             .getRequest();
 
-            clientIPAddress = request.getRemoteAddr();
+            clientIPAddress = request.getHeader("X-FORWARDED-FOR");
 
+            clientIPAddress = clientIPAddress.contains(",") ? clientIPAddress.split(",")[0] : clientIPAddress;
+
+            if (clientIPAddress == null) {
+                clientIPAddress = request.getRemoteAddr();
+            }
             serverIPAddress = request.getLocalAddr();
 
             username = getUsername();
@@ -62,7 +67,13 @@ public class AuditTrailManagementAspect {
                     ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
                             .getRequest();
 
-            clientIPAddress = request.getRemoteAddr();
+            clientIPAddress = request.getHeader("X-FORWARDED-FOR");
+
+            clientIPAddress = clientIPAddress.contains(",") ? clientIPAddress.split(",")[0] : clientIPAddress;
+
+            if (clientIPAddress == null) {
+                clientIPAddress = request.getRemoteAddr();
+            }
 
             serverIPAddress = request.getLocalAddr();
 
