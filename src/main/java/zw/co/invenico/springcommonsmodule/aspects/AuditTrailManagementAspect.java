@@ -34,7 +34,7 @@ public class AuditTrailManagementAspect {
 
         String clientIPAddress = null;
 
-        String remoteIPAddress = null;
+        String serverIPAddress = null;
 
         String username = null;
 
@@ -47,7 +47,7 @@ public class AuditTrailManagementAspect {
 
             clientIPAddress = request.getRemoteAddr();
 
-            remoteIPAddress = request.getLocalAddr();
+            serverIPAddress = request.getLocalAddr();
 
             username = getUsername();
 
@@ -64,13 +64,13 @@ public class AuditTrailManagementAspect {
 
             clientIPAddress = request.getRemoteAddr();
 
-            remoteIPAddress = request.getLocalAddr();
+            serverIPAddress = request.getLocalAddr();
 
             username = getUsername();
             throw e;
         } finally {
             String finalClientIPAddress = clientIPAddress;
-            String finalRemoteIPAddress = remoteIPAddress;
+            String finalServerIPAddress = serverIPAddress;
             String finalUsername = username;
             new Thread(() -> {
                 val auditActionRequest = AuditActionRequest.builder()
@@ -78,7 +78,7 @@ public class AuditTrailManagementAspect {
                         .resource(audit.resource())
                         .clientIpAddress(finalClientIPAddress)
                         .dateTime(LocalDateTime.now())
-                        .serverIpAddress(finalRemoteIPAddress)
+                        .serverIpAddress(finalServerIPAddress)
                         .username(finalUsername)
                         .build();
                 Object response = auditFeignClientService.create(auditActionRequest);
