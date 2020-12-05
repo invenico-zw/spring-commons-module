@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.invenico.commons</groupId>
     <artifactId>spring-commons-module</artifactId>
-    <version>1.4</version>
+    <version>1.3.1</version>
     <name>spring-commons-module</name>
     <description>Commons for java project modules</description>
 
@@ -53,10 +53,7 @@
             <version>20200518</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-oauth2</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
