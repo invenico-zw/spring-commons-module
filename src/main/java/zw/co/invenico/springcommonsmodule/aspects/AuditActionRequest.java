@@ -24,4 +24,6 @@ public class AuditActionRequest {
     private String clientIpAddress;
 
     private String serverIpAddress;
+
+    private String payload;
 }

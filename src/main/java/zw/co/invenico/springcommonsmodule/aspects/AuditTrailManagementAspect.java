@@ -38,8 +38,13 @@ public class AuditTrailManagementAspect {
 
         String username = null;
 
+        String payload = null;
+
         try {
-            Object result = joinPoint.proceed();
+
+            payload = Arrays.toString(joinPoint.getArgs());
+
+            log.info("## payload {}", payload);
 
             HttpServletRequest request =
                     ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
@@ -55,34 +60,19 @@ public class AuditTrailManagementAspect {
             serverIPAddress = request.getLocalAddr();
 
             username = getUsername();
+
+            Object result = joinPoint.proceed();
 
             log.info("The method {}() ends with {}", joinPoint.getSignature().getName(), result);
 
             return result;
-        } catch (IllegalArgumentException e) {
-            log.error("Illegal argument {} in {}()", Arrays.toString(joinPoint.getArgs()),
-                    joinPoint.getSignature().getName());
-
-            HttpServletRequest request =
-                    ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
-                            .getRequest();
-
-            clientIPAddress = request.getHeader("X-FORWARDED-FOR");
-
-            clientIPAddress = clientIPAddress.contains(",") ? clientIPAddress.split(",")[0] : clientIPAddress;
-
-            if (clientIPAddress == null) {
-                clientIPAddress = request.getRemoteAddr();
-            }
-
-            serverIPAddress = request.getLocalAddr();
-
-            username = getUsername();
-            throw e;
         } finally {
             String finalClientIPAddress = clientIPAddress;
             String finalServerIPAddress = serverIPAddress;
             String finalUsername = username;
+            String finalPayload = payload;
+
+
             new Thread(() -> {
                 val auditActionRequest = AuditActionRequest.builder()
                         .actionPerformed(audit.action())
@@ -91,6 +81,7 @@ public class AuditTrailManagementAspect {
                         .dateTime(LocalDateTime.now())
                         .serverIpAddress(finalServerIPAddress)
                         .username(finalUsername)
+                        .payload(finalPayload)
                         .build();
                 Object response = auditFeignClientService.create(auditActionRequest);
 
