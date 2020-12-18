@@ -116,7 +116,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         if (message.contains("Duplicate")) {
             message = message.replace(message.substring(message.indexOf("for"), message.length()), ". This value must be unique.");
         }
-        RestResponse errorDetails = new RestResponse(ex.getMessage(), LocalDateTime.now().toString(), HttpStatus.BAD_REQUEST);
+        RestResponse errorDetails = new RestResponse(message, LocalDateTime.now().toString(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 
     }
