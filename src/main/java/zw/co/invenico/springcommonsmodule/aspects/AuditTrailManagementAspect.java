@@ -27,7 +27,7 @@ public class AuditTrailManagementAspect {
         this.auditFeignClientService = auditFeignClientService;
     }
 
-    @Around(value = "@annotation(audit)", argNames = "audit")
+    @Around(value = "@annotation(audit)", argNames = "joinPoint,audit")
     public Object handleAuditTrail(final ProceedingJoinPoint joinPoint, final Audit audit) throws Throwable {
 
         log.info("## action: {} resource: {}", audit.action(), audit.resource());
